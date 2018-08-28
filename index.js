@@ -38,11 +38,14 @@ function createPlugin({
   }
   
   function idToName(id) {
+    let name;
     if (typeof names === "function") {
-      return names(id);
+      name = names(id);
+    } else if (names && typeof names === "object") {
+      name = names[id];
     }
-    if (names && typeof names === "object") {
-      return names[id];
+    if (name) {
+      return name;
     }
     if (path.isAbsolute(id)) {
       const {name} = path.parse(id);
