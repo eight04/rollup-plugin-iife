@@ -5,7 +5,7 @@ rollup-plugin-iife
 [![Coverage Status](https://coveralls.io/repos/github/eight04/rollup-plugin-iife/badge.svg?branch=master)](https://coveralls.io/github/eight04/rollup-plugin-iife?branch=master)
 [![install size](https://packagephobia.now.sh/badge?p=rollup-plugin-iife)](https://packagephobia.now.sh/result?p=rollup-plugin-iife)
 
-Currently (rollup@0.65), [rollup doesn't support code splitting with IIFE output](https://github.com/rollup/rollup/issues/2072). This plugin would would ES module output into a simple IIFE.
+Currently (rollup@0.65), [rollup doesn't support code splitting with IIFE output](https://github.com/rollup/rollup/issues/2072). This plugin would transform ES module output into IIFEs.
 
 Installation
 ------------
