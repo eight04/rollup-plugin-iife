@@ -1,0 +1,30 @@
+{
+	"env": {
+		"es6": true,
+		"node": true
+	},
+	"rules": {
+		"no-use-before-define": ["error", "nofunc"],
+		"semi": ["error", "always"]
+	},
+	"extends": [
+		"eslint:recommended"
+	],
+  "overrides": [
+    {
+      "files": ["test/*/*.js"],
+      "parserOptions": {
+        "sourceType": "module"
+      },
+      "rules": {
+        "no-unused-vars": 0
+      },
+      "env": {
+        "browser": true
+      }
+    }
+  ],
+  "parserOptions": {
+    "ecmaVersion": 8
+  }
+}

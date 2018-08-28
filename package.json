@@ -1,0 +1,43 @@
+{
+  "name": "rollup-plugin-iife",
+  "version": "0.0.0",
+  "description": "Convert ES modules into IIFEs.",
+  "author": "eight04 <eight04@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "rollup-plugin",
+    "rollup",
+    "iife"
+  ],
+  "scripts": {
+    "lint": "eslint **/*.js --cache",
+    "nyc": "nyc --reporter=html mocha",
+    "test": "npm run lint && npm run nyc",
+    "preversion": "npm test",
+    "postversion": "git push --follow-tags && npm publish"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "camelcase": "^5.0.0",
+    "es-iife": "^0.1.0"
+  },
+  "devDependencies": {
+    "endent": "^1.1.2",
+    "eslint": "^5.3.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.0.1",
+    "rollup": "^0.65.0",
+    "tempdir-yaml": "^0.2.1"
+  },
+  "peerDependencies": {
+    "rollup": ">=0.65"
+  },
+  "repository": "eight04/rollup-plugin-iife",
+  "eslintIgnore": [
+    "coverage"
+  ],
+  "engines": {
+    "node": ">=8"
+  },
+  "files": []
+}
