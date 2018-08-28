@@ -54,6 +54,8 @@ If `names` is a function, the signature is:
 
 If `names` is an object, it is a `moduleId`/`globalVariableName` map. Note that `moduleId` can be relative to the output folder (e.g. `./entry.js`), the plugin would resolve it to the absolute path.
 
+If `sourcemap` is false then don't generate the sourcemap. Default: `true`.
+
 Changelog
 ---------
 
