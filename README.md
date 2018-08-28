@@ -61,6 +61,6 @@ If `sourcemap` is false then don't generate the sourcemap. Default: `true`.
 Changelog
 ---------
 
-* 0.1.0 (Next)
+* 0.1.0 (Aug 28, 2018)
 
   - First release.
