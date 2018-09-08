@@ -2,7 +2,7 @@ rollup-plugin-iife
 ==================
 
 [![Build Status](https://travis-ci.org/eight04/rollup-plugin-iife.svg?branch=master)](https://travis-ci.org/eight04/rollup-plugin-iife)
-[![Coverage Status](https://coveralls.io/repos/github/eight04/rollup-plugin-iife/badge.svg?branch=master)](https://coveralls.io/github/eight04/rollup-plugin-iife?branch=master)
+[![codecov](https://codecov.io/gh/eight04/rollup-plugin-iife/branch/master/graph/badge.svg)](https://codecov.io/gh/eight04/rollup-plugin-iife)
 [![install size](https://packagephobia.now.sh/badge?p=rollup-plugin-iife)](https://packagephobia.now.sh/result?p=rollup-plugin-iife)
 
 Currently (rollup@0.65), [rollup doesn't support code splitting with IIFE output](https://github.com/rollup/rollup/issues/2072). This plugin would transform ES module output into IIFEs.
