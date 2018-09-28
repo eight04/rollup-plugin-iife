@@ -169,4 +169,37 @@ describe("rollup-plugin-iife", () => {
       `);
     })
   );
+  
+  it("options.names should overwrite output.globals", () =>
+    withDir(`
+      - entry.js: |
+          import Vue from "vue";
+          export default new Vue;
+    `, async resolve => {
+      const result = await bundle(
+        [resolve("entry.js")],
+        {
+          dir: resolve("dist"),
+          globals: {
+            vue: 'Vue'
+          }
+        },
+        {
+          names: {
+            vue: "NotVue"
+          }
+        }
+      );
+      assert.equal(result.output["entry.js"].code.trim(), endent`
+        var entry = (function () {
+        
+        
+        var entry = new NotVue;
+        
+        
+        return entry;
+        })();
+      `);
+    })
+  );
 });

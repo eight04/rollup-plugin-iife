@@ -42,9 +42,9 @@ function createPlugin({
       return iifeTransform({
         code,
         parse: this.parse,
-        name: idToName(path.resolve(outputDir, fileName), [globals, names]),
+        name: idToName(path.resolve(outputDir, fileName), [names, globals]),
         sourcemap,
-        resolveGlobal: id => idToName(resolveId(id, outputDir), [globals, names])
+        resolveGlobal: id => idToName(resolveId(id, outputDir), [names, globals])
       });
     }
   };
