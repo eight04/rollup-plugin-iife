@@ -2,6 +2,25 @@ const path = require("path");
 const camelcase = require("camelcase");
 const {transform: iifeTransform} = require("es-iife");
 
+function idToName(id, nameMaps) {
+  for (const names of nameMaps) {
+    let name;
+    if (typeof names === "function") {
+      name = names(id);
+    } else if (names && typeof names === "object") {
+      name = names[id];
+    }
+    if (name) {
+      return name;
+    }
+  }
+  if (path.isAbsolute(id)) {
+    const {name} = path.parse(id);
+    return camelcase(name);
+  }
+  return camelcase(id);
+}
+
 function createPlugin({
   sourcemap = true,
   names
@@ -10,7 +29,7 @@ function createPlugin({
   
   return {
     name: "rollup-plugin-inline-js",
-    renderChunk(code, {fileName}, {dir: outputDir}) {
+    renderChunk(code, {fileName}, {dir: outputDir, globals}) {
       if (names && typeof names === "object" && !isNamesResolved) {
         const output = {};
         for (const [key, value] of Object.entries(names)) {
@@ -23,9 +42,9 @@ function createPlugin({
       return iifeTransform({
         code,
         parse: this.parse,
-        name: idToName(path.resolve(outputDir, fileName)),
+        name: idToName(path.resolve(outputDir, fileName), [globals, names]),
         sourcemap,
-        resolveGlobal: id => idToName(resolveId(id, outputDir))
+        resolveGlobal: id => idToName(resolveId(id, outputDir), [globals, names])
       });
     }
   };
@@ -35,23 +54,6 @@ function createPlugin({
       return path.resolve(dir, id);
     }
     return id;
-  }
-  
-  function idToName(id) {
-    let name;
-    if (typeof names === "function") {
-      name = names(id);
-    } else if (names && typeof names === "object") {
-      name = names[id];
-    }
-    if (name) {
-      return name;
-    }
-    if (path.isAbsolute(id)) {
-      const {name} = path.parse(id);
-      return camelcase(name);
-    }
-    return camelcase(id);
   }
 }
 
