@@ -7,7 +7,12 @@ const endent = require("endent");
 
 const createPlugin = require("..");
 
-async function bundle(input, dir, options = {}) {
+async function bundle(input, output, options = {}) {
+  if (typeof output === "string") {
+    output = {
+      dir: output
+    };
+  }
   const warns = [];
   const bundle = await rollup.rollup({
     input,
@@ -22,11 +27,11 @@ async function bundle(input, dir, options = {}) {
   });
   const modules = bundle.cache.modules.slice();
   const result = await bundle.generate({
-    dir,
     format: "es",
     legacy: true,
     freeze: false,
-    sourcemap: true
+    sourcemap: true,
+    ...output
   });
   result.warns = warns;
   result.modules = modules;
@@ -129,6 +134,34 @@ describe("rollup-plugin-iife", () => {
         
         
         var entry = () => new EventLite;
+        
+        
+        return entry;
+        })();
+      `);
+    })
+  );
+  
+  it("work with output.globals", () =>
+    withDir(`
+      - entry.js: |
+          import Vue from "vue";
+          export default new Vue;
+    `, async resolve => {
+      const result = await bundle(
+        [resolve("entry.js")],
+        {
+          dir: resolve("dist"),
+          globals: {
+            vue: 'Vue'
+          }
+        }
+      );
+      assert.equal(result.output["entry.js"].code.trim(), endent`
+        var entry = (function () {
+        
+        
+        var entry = new Vue;
         
         
         return entry;
