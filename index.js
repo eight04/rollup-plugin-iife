@@ -23,7 +23,8 @@ function idToName(id, nameMaps) {
 
 function createPlugin({
   sourcemap = true,
-  names
+  names,
+  prefix = ''
 } = {}) {
   let isNamesResolved = false;
   
@@ -42,7 +43,7 @@ function createPlugin({
       return iifeTransform({
         code,
         parse: this.parse,
-        name: idToName(path.resolve(outputDir, fileName), [names, globals]),
+        name: prefix + idToName(path.resolve(outputDir, fileName), [names, globals]),
         sourcemap,
         resolveGlobal: id => idToName(resolveId(id, outputDir), [names, globals])
       });

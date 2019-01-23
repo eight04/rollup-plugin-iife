@@ -202,4 +202,31 @@ describe("rollup-plugin-iife", () => {
       `);
     })
   );
+
+  it("options.prefix should add prefix to name", () => {
+    withDir(`
+      - entry.js: |
+          export const foo = "123";
+    `, async resolve => {
+      const result = await bundle(
+        [resolve("entry.js")],
+        {
+          dir: resolve("dist"),
+        },
+        {
+          prefix: '_my_'
+        }
+      );
+      assert.equal(result.output["entry.js"].code.trim(), endent`
+        var _my_entry = (function () {
+        const foo = "123";
+        
+        
+        return {
+          foo: foo
+        };
+        })();
+      `);
+    });
+  });
 });
