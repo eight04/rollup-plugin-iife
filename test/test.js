@@ -229,4 +229,60 @@ describe("rollup-plugin-iife", () => {
       `);
     });
   });
+
+  it("prefix should not affect user-defined names in object", () => {
+    withDir(`
+      - entry.js: |
+          import Emitter from "event-lite";
+          export default () => new Emitter;
+    `, async resolve => {
+      const result = await bundle([resolve("entry.js")], resolve("dist"), {
+        prefix: '_my_',
+        names: {
+          "./entry.js": "myVar",
+          "event-lite": "EventLite"
+        }
+      });
+      assert.equal(result.output["entry.js"].code.trim(), endent`
+        var myVar = (function () {
+        
+        
+        var entry = () => new EventLite;
+        
+        
+        return entry;
+        })();
+      `);
+    });
+  });
+
+  it("prefix should not affect user-defined names in function", () => {
+    withDir(`
+      - entry.js: |
+          import Emitter from "event-lite";
+          export default () => new Emitter;
+    `, async resolve => {
+      const result = await bundle([resolve("entry.js")], resolve("dist"), {
+        prefix: '_my_',
+        names: id => {
+          if (id === "event-lite") {
+            return "EventLite";
+          }
+          if (/dist.entry\.js$/.test(id)) {
+            return "myVar";
+          }
+        }
+      });
+      assert.equal(result.output["entry.js"].code.trim(), endent`
+        var myVar = (function () {
+        
+        
+        var entry = () => new EventLite;
+        
+        
+        return entry;
+        })();
+      `);
+    });
+  });
 });
