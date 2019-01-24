@@ -2,7 +2,7 @@ const path = require("path");
 const camelcase = require("camelcase");
 const {transform: iifeTransform} = require("es-iife");
 
-function idToName(id, nameMaps) {
+function idToName(id, nameMaps, prefix = "") {
   for (const names of nameMaps) {
     let name;
     if (typeof names === "function") {
@@ -16,15 +16,15 @@ function idToName(id, nameMaps) {
   }
   if (path.isAbsolute(id)) {
     const {name} = path.parse(id);
-    return camelcase(name);
+    return prefix + camelcase(name);
   }
-  return camelcase(id);
+  return prefix + camelcase(id);
 }
 
 function createPlugin({
   sourcemap = true,
   names,
-  prefix = ''
+  prefix
 } = {}) {
   let isNamesResolved = false;
   
@@ -43,7 +43,7 @@ function createPlugin({
       return iifeTransform({
         code,
         parse: this.parse,
-        name: prefix + idToName(path.resolve(outputDir, fileName), [names, globals]),
+        name: idToName(path.resolve(outputDir, fileName), [names, globals], prefix),
         sourcemap,
         resolveGlobal: id => idToName(resolveId(id, outputDir), [names, globals])
       });
