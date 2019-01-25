@@ -82,6 +82,10 @@ Related projects
 Changelog
 ---------
 
+* 0.1.2 (Jan 25, 2019)
+
+  - Add: `prefix` option.
+
 * 0.1.1 (Sep 28, 2018)
 
   - Add: support `output.globals` option.
