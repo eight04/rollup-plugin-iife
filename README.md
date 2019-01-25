@@ -51,7 +51,8 @@ This module exports a single function.
 ```js
 const plugin = createPlugin({
   names?: Function|Object,
-  sourcemap?: Boolean
+  sourcemap?: Boolean,
+  prefix?: String
 });
 ```
 
@@ -68,6 +69,8 @@ If `names` is an object, it is a `moduleId`/`globalVariableName` map. `moduleId`
 If the plugin can't find a proper variable name, it would generate one according to its filename with [camelcase](https://www.npmjs.com/package/camelcase).
 
 If `sourcemap` is false then don't generate the sourcemap. Default: `true`.
+
+When `prefix` is defined, it will be used to prefix auto-generated variable names. It doesn't prefix names defined in the `names` option.
 
 Related projects
 ----------------
