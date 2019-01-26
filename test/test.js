@@ -203,7 +203,7 @@ describe("rollup-plugin-iife", () => {
     })
   );
 
-  it("options.prefix should add prefix to name", () => {
+  it("options.prefix should add prefix to name", () =>
     withDir(`
       - entry.js: |
           export const foo = "123";
@@ -227,10 +227,10 @@ describe("rollup-plugin-iife", () => {
         };
         })();
       `);
-    });
-  });
+    })
+  );
 
-  it("prefix should not affect user-defined names in object", () => {
+  it("prefix should not affect user-defined names in object", () =>
     withDir(`
       - entry.js: |
           import Emitter from "event-lite";
@@ -253,10 +253,10 @@ describe("rollup-plugin-iife", () => {
         return entry;
         })();
       `);
-    });
-  });
+    })
+  );
 
-  it("prefix should not affect user-defined names in function", () => {
+  it("prefix should not affect user-defined names in function", () =>
     withDir(`
       - entry.js: |
           import Emitter from "event-lite";
@@ -283,6 +283,6 @@ describe("rollup-plugin-iife", () => {
         return entry;
         })();
       `);
-    });
-  });
+    })
+  );
 });
