@@ -35,6 +35,9 @@ async function bundle(input, output, options = {}) {
   });
   result.warns = warns;
   result.modules = modules;
+  for (const o of result.output) {
+    result.output[o.fileName] = o;
+  }
   return result;
 }
 
