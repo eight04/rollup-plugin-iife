@@ -13,16 +13,16 @@ async function bundle(input, output, options = {}) {
       dir: output
     };
   }
-  const warns = [];
   const bundle = await rollup.rollup({
     input,
     plugins: [
       createPlugin(options)
     ],
-    experimentalCodeSplitting: true,
     onwarn(warn) {
-      // https://github.com/rollup/rollup/issues/2308
-      warns.push(warn);
+      if (warn.code === "UNRESOLVED_IMPORT") {
+        return;
+      }
+      throw warn;
     }
   });
   const modules = bundle.cache.modules.slice();
@@ -33,8 +33,10 @@ async function bundle(input, output, options = {}) {
     sourcemap: true,
     ...output
   });
-  result.warns = warns;
   result.modules = modules;
+  for (const o of result.output) {
+    result.output[o.fileName] = o;
+  }
   return result;
 }
 
@@ -203,7 +205,7 @@ describe("rollup-plugin-iife", () => {
     })
   );
 
-  it("options.prefix should add prefix to name", () => {
+  it("options.prefix should add prefix to name", () =>
     withDir(`
       - entry.js: |
           export const foo = "123";
@@ -227,10 +229,10 @@ describe("rollup-plugin-iife", () => {
         };
         })();
       `);
-    });
-  });
+    })
+  );
 
-  it("prefix should not affect user-defined names in object", () => {
+  it("prefix should not affect user-defined names in object", () =>
     withDir(`
       - entry.js: |
           import Emitter from "event-lite";
@@ -253,10 +255,10 @@ describe("rollup-plugin-iife", () => {
         return entry;
         })();
       `);
-    });
-  });
+    })
+  );
 
-  it("prefix should not affect user-defined names in function", () => {
+  it("prefix should not affect user-defined names in function", () =>
     withDir(`
       - entry.js: |
           import Emitter from "event-lite";
@@ -283,6 +285,6 @@ describe("rollup-plugin-iife", () => {
         return entry;
         })();
       `);
-    });
-  });
+    })
+  );
 });
