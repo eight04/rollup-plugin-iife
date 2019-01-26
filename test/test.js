@@ -13,16 +13,16 @@ async function bundle(input, output, options = {}) {
       dir: output
     };
   }
-  const warns = [];
   const bundle = await rollup.rollup({
     input,
     plugins: [
       createPlugin(options)
     ],
-    experimentalCodeSplitting: true,
     onwarn(warn) {
-      // https://github.com/rollup/rollup/issues/2308
-      warns.push(warn);
+      if (warn.code === "UNRESOLVED_IMPORT") {
+        return;
+      }
+      throw warn;
     }
   });
   const modules = bundle.cache.modules.slice();
@@ -33,7 +33,6 @@ async function bundle(input, output, options = {}) {
     sourcemap: true,
     ...output
   });
-  result.warns = warns;
   result.modules = modules;
   for (const o of result.output) {
     result.output[o.fileName] = o;
