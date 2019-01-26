@@ -82,6 +82,10 @@ Related projects
 Changelog
 ---------
 
+* 0.2.0 (Jan 26, 2019)
+
+  - Breaking: bump rollup version to 1.x.
+
 * 0.1.2 (Jan 25, 2019)
 
   - Add: `prefix` option.
