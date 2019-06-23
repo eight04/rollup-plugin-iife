@@ -7,7 +7,9 @@ const endent = require("endent");
 
 const createPlugin = require("..");
 
-async function bundle(input, output, options = {}) {
+async function bundle(input, output, options = {}, ignoreWarnings = []) {
+  const ignoredWarnings = ["UNRESOLVED_IMPORT"];
+
   if (typeof output === "string") {
     output = {
       dir: output
@@ -19,9 +21,8 @@ async function bundle(input, output, options = {}) {
       createPlugin(options)
     ],
     onwarn(warn) {
-      if (warn.code === "UNRESOLVED_IMPORT") {
-        return;
-      } else if (warn.code === "EMPTY_BUNDLE") {
+      ignoreWarnings.push(...ignoredWarnings);
+      if (ignoreWarnings.includes(warn.code)) {
         return;
       }
       throw warn;
@@ -299,7 +300,7 @@ describe("rollup-plugin-iife", () => {
           export const foo = "123";
       - bar.js: |
     `, async resolve => {
-      const result = await bundle(["entry.js", "foo.js", "bar.js"].map(i => resolve(i)), resolve("dist"));
+      const result = await bundle(["entry.js", "foo.js", "bar.js"].map(i => resolve(i)), resolve("dist"), {}, ["EMPTY_BUNDLE"]);
       assert.equal(result.output["entry.js"].code.trim(), endent`
         (function () {
 
