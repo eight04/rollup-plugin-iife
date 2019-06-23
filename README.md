@@ -1,7 +1,7 @@
 rollup-plugin-iife
 ==================
 
-[![Build Status](https://travis-ci.org/eight04/rollup-plugin-iife.svg?branch=master)](https://travis-ci.org/eight04/rollup-plugin-iife)
+[![Build Status](https://travis-ci.com/eight04/rollup-plugin-iife.svg?branch=master)](https://travis-ci.com/eight04/rollup-plugin-iife)
 [![codecov](https://codecov.io/gh/eight04/rollup-plugin-iife/branch/master/graph/badge.svg)](https://codecov.io/gh/eight04/rollup-plugin-iife)
 [![install size](https://packagephobia.now.sh/badge?p=rollup-plugin-iife)](https://packagephobia.now.sh/result?p=rollup-plugin-iife)
 
@@ -81,6 +81,10 @@ Related projects
 
 Changelog
 ---------
+
+* 0.2.1 (Jun 23, 2019)
+
+  - Fix: handle empty chunks.
 
 * 0.2.0 (Jan 26, 2019)
 
