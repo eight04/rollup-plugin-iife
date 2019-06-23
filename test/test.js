@@ -21,6 +21,8 @@ async function bundle(input, output, options = {}) {
     onwarn(warn) {
       if (warn.code === "UNRESOLVED_IMPORT") {
         return;
+      } else if (warn.code === "EMPTY_BUNDLE") {
+        return;
       }
       throw warn;
     }
@@ -50,17 +52,17 @@ describe("rollup-plugin-iife", () => {
       const result = await bundle([resolve("entry.js")], resolve("dist"));
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var entry = (function () {
-        
-        
+
+
         var entry = () => new eventLite;
-        
-        
+
+
         return entry;
         })();
       `);
     })
   );
-  
+
   it("multiple entries", () =>
     withDir(`
       - entry.js: |
@@ -72,16 +74,16 @@ describe("rollup-plugin-iife", () => {
       const result = await bundle(["entry.js", "foo.js"].map(i => resolve(i)), resolve("dist"));
       assert.equal(result.output["entry.js"].code.trim(), endent`
         (function () {
-        
-        
+
+
         console.log(foo.foo);
         })();
       `);
       assert.equal(result.output["foo.js"].code.trim(), endent`
         var foo = (function () {
         const foo = "123";
-        
-        
+
+
         return {
           foo: foo
         };
@@ -89,7 +91,7 @@ describe("rollup-plugin-iife", () => {
       `);
     })
   );
-  
+
   it("names is object", () =>
     withDir(`
       - entry.js: |
@@ -104,17 +106,17 @@ describe("rollup-plugin-iife", () => {
       });
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var myVar = (function () {
-        
-        
+
+
         var entry = () => new EventLite;
-        
-        
+
+
         return entry;
         })();
       `);
     })
   );
-  
+
   it("names is function", () =>
     withDir(`
       - entry.js: |
@@ -133,17 +135,17 @@ describe("rollup-plugin-iife", () => {
       });
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var myVar = (function () {
-        
-        
+
+
         var entry = () => new EventLite;
-        
-        
+
+
         return entry;
         })();
       `);
     })
   );
-  
+
   it("work with output.globals", () =>
     withDir(`
       - entry.js: |
@@ -161,17 +163,17 @@ describe("rollup-plugin-iife", () => {
       );
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var entry = (function () {
-        
-        
+
+
         var entry = new Vue;
-        
-        
+
+
         return entry;
         })();
       `);
     })
   );
-  
+
   it("options.names should overwrite output.globals", () =>
     withDir(`
       - entry.js: |
@@ -194,11 +196,11 @@ describe("rollup-plugin-iife", () => {
       );
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var entry = (function () {
-        
-        
+
+
         var entry = new NotVue;
-        
-        
+
+
         return entry;
         })();
       `);
@@ -222,8 +224,8 @@ describe("rollup-plugin-iife", () => {
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var _my_entry = (function () {
         const foo = "123";
-        
-        
+
+
         return {
           foo: foo
         };
@@ -247,11 +249,11 @@ describe("rollup-plugin-iife", () => {
       });
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var myVar = (function () {
-        
-        
+
+
         var entry = () => new EventLite;
-        
-        
+
+
         return entry;
         })();
       `);
@@ -277,14 +279,45 @@ describe("rollup-plugin-iife", () => {
       });
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var myVar = (function () {
-        
-        
+
+
         var entry = () => new EventLite;
-        
-        
+
+
         return entry;
         })();
       `);
+    })
+  );
+
+  it("work with empty chunks", () =>
+    withDir(`
+      - entry.js: |
+          import {foo} from "./foo.js";
+          console.log(foo);
+      - foo.js: |
+          export const foo = "123";
+      - bar.js: |
+    `, async resolve => {
+      const result = await bundle(["entry.js", "foo.js", "bar.js"].map(i => resolve(i)), resolve("dist"));
+      assert.equal(result.output["entry.js"].code.trim(), endent`
+        (function () {
+
+
+        console.log(foo.foo);
+        })();
+      `);
+      assert.equal(result.output["foo.js"].code.trim(), endent`
+        var foo = (function () {
+        const foo = "123";
+
+
+        return {
+          foo: foo
+        };
+        })();
+      `);
+      assert.equal(result.output["bar.js"].code.trim(), "");
     })
   );
 });

@@ -27,10 +27,13 @@ function createPlugin({
   prefix
 } = {}) {
   let isNamesResolved = false;
-  
+
   return {
     name: "rollup-plugin-inline-js",
     renderChunk(code, {fileName}, {dir: outputDir, globals}) {
+      if (!code) {
+        return null;
+      }
       if (names && typeof names === "object" && !isNamesResolved) {
         const output = {};
         for (const [key, value] of Object.entries(names)) {
@@ -39,7 +42,7 @@ function createPlugin({
         names = output;
         isNamesResolved = true;
       }
-      
+
       return iifeTransform({
         code,
         parse: this.parse,
@@ -49,7 +52,7 @@ function createPlugin({
       });
     }
   };
-  
+
   function resolveId(id, dir) {
     if (id.startsWith(".")) {
       return path.resolve(dir, id);
