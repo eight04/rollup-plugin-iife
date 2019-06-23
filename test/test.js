@@ -7,8 +7,10 @@ const endent = require("endent");
 
 const createPlugin = require("..");
 
-async function bundle(input, output, options = {}, ignoreWarnings = []) {
-  const ignoredWarnings = ["UNRESOLVED_IMPORT"];
+const UNRESOLVED_IMPORT = "UNRESOLVED_IMPORT";
+const EMPTY_BUNDLE = "EMPTY_BUNDLE";
+
+async function bundle(input, output, {ignoreWarning = [], ...options} = {}) {
 
   if (typeof output === "string") {
     output = {
@@ -21,8 +23,7 @@ async function bundle(input, output, options = {}, ignoreWarnings = []) {
       createPlugin(options)
     ],
     onwarn(warn) {
-      ignoreWarnings.push(...ignoredWarnings);
-      if (ignoreWarnings.includes(warn.code)) {
+      if (ignoreWarning.includes(warn.code)) {
         return;
       }
       throw warn;
@@ -50,7 +51,7 @@ describe("rollup-plugin-iife", () => {
           import Emitter from "event-lite";
           export default () => new Emitter;
     `, async resolve => {
-      const result = await bundle([resolve("entry.js")], resolve("dist"));
+      const result = await bundle([resolve("entry.js")], resolve("dist"), {ignoreWarning: [UNRESOLVED_IMPORT]});
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var entry = (function () {
 
@@ -72,7 +73,7 @@ describe("rollup-plugin-iife", () => {
       - foo.js: |
           export const foo = "123";
     `, async resolve => {
-      const result = await bundle(["entry.js", "foo.js"].map(i => resolve(i)), resolve("dist"));
+      const result = await bundle(["entry.js", "foo.js"].map(i => resolve(i)), resolve("dist"), {ignoreWarning: [UNRESOLVED_IMPORT]});
       assert.equal(result.output["entry.js"].code.trim(), endent`
         (function () {
 
@@ -100,6 +101,7 @@ describe("rollup-plugin-iife", () => {
           export default () => new Emitter;
     `, async resolve => {
       const result = await bundle([resolve("entry.js")], resolve("dist"), {
+        ignoreWarning: [UNRESOLVED_IMPORT],
         names: {
           "./entry.js": "myVar",
           "event-lite": "EventLite"
@@ -125,6 +127,7 @@ describe("rollup-plugin-iife", () => {
           export default () => new Emitter;
     `, async resolve => {
       const result = await bundle([resolve("entry.js")], resolve("dist"), {
+        ignoreWarning: [UNRESOLVED_IMPORT],
         names: id => {
           if (id === "event-lite") {
             return "EventLite";
@@ -160,7 +163,8 @@ describe("rollup-plugin-iife", () => {
           globals: {
             vue: 'Vue'
           }
-        }
+        },
+        {ignoreWarning: [UNRESOLVED_IMPORT]}
       );
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var entry = (function () {
@@ -190,6 +194,7 @@ describe("rollup-plugin-iife", () => {
           }
         },
         {
+          ignoreWarning: [UNRESOLVED_IMPORT],
           names: {
             vue: "NotVue"
           }
@@ -219,6 +224,7 @@ describe("rollup-plugin-iife", () => {
           dir: resolve("dist"),
         },
         {
+          ignoreWarning: [UNRESOLVED_IMPORT],
           prefix: '_my_'
         }
       );
@@ -242,6 +248,7 @@ describe("rollup-plugin-iife", () => {
           export default () => new Emitter;
     `, async resolve => {
       const result = await bundle([resolve("entry.js")], resolve("dist"), {
+        ignoreWarning: [UNRESOLVED_IMPORT],
         prefix: '_my_',
         names: {
           "./entry.js": "myVar",
@@ -268,6 +275,7 @@ describe("rollup-plugin-iife", () => {
           export default () => new Emitter;
     `, async resolve => {
       const result = await bundle([resolve("entry.js")], resolve("dist"), {
+        ignoreWarning: [UNRESOLVED_IMPORT],
         prefix: '_my_',
         names: id => {
           if (id === "event-lite") {
@@ -300,7 +308,7 @@ describe("rollup-plugin-iife", () => {
           export const foo = "123";
       - bar.js: |
     `, async resolve => {
-      const result = await bundle(["entry.js", "foo.js", "bar.js"].map(i => resolve(i)), resolve("dist"), {}, ["EMPTY_BUNDLE"]);
+      const result = await bundle(["entry.js", "foo.js", "bar.js"].map(i => resolve(i)), resolve("dist"), {ignoreWarning: [UNRESOLVED_IMPORT, EMPTY_BUNDLE]});
       assert.equal(result.output["entry.js"].code.trim(), endent`
         (function () {
 
