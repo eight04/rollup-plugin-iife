@@ -31,25 +31,25 @@ function createPlugin({
   return {
     name: "rollup-plugin-inline-js",
     renderChunk(code, {fileName}, {dir: outputDir, globals}) {
-      if (code) {
-        if (names && typeof names === "object" && !isNamesResolved) {
-          const output = {};
-          for (const [key, value] of Object.entries(names)) {
-            output[resolveId(key, outputDir)] = value;
-          }
-          names = output;
-          isNamesResolved = true;
-        }
-
-        return iifeTransform({
-          code,
-          parse: this.parse,
-          name: idToName(path.resolve(outputDir, fileName), [names, globals], prefix),
-          sourcemap,
-          resolveGlobal: id => idToName(resolveId(id, outputDir), [names, globals])
-        });
+      if (!code) {
+        return null;
       }
-      return null;
+      if (names && typeof names === "object" && !isNamesResolved) {
+        const output = {};
+        for (const [key, value] of Object.entries(names)) {
+          output[resolveId(key, outputDir)] = value;
+        }
+        names = output;
+        isNamesResolved = true;
+      }
+
+      return iifeTransform({
+        code,
+        parse: this.parse,
+        name: idToName(path.resolve(outputDir, fileName), [names, globals], prefix),
+        sourcemap,
+        resolveGlobal: id => idToName(resolveId(id, outputDir), [names, globals])
+      });
     }
   };
 

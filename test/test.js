@@ -290,7 +290,7 @@ describe("rollup-plugin-iife", () => {
     })
   );
 
-  it("multiple entries when some are empty", () =>
+  it("work with empty chunks", () =>
     withDir(`
       - entry.js: |
           import {foo} from "./foo.js";
@@ -317,6 +317,7 @@ describe("rollup-plugin-iife", () => {
         };
         })();
       `);
+      assert.equal(result.output["bar.js"].code.trim(), "");
     })
   );
 });
