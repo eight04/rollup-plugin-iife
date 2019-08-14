@@ -82,6 +82,10 @@ Related projects
 Changelog
 ---------
 
+* 0.3.0 (Aug 14, 2019)
+
+  - Bump dependencies. Update to es-iife@0.2.0. Define default export with `var`.
+
 * 0.2.1 (Jun 23, 2019)
 
   - Fix: handle empty chunks.
