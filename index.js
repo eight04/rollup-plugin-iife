@@ -48,7 +48,7 @@ function createPlugin({
         parse: this.parse,
         name: idToName(path.resolve(outputDir, fileName), [names, globals], prefix),
         sourcemap,
-        resolveGlobal: id => idToName(resolveId(id, outputDir), [names, globals])
+        resolveGlobal: id => idToName(resolveId(id, outputDir), [names, globals], prefix)
       });
     }
   };
