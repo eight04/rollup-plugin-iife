@@ -370,6 +370,30 @@ describe("rollup-plugin-iife", () => {
       assert.equal(hash.split(".")[0], hash3.split(".")[0]);
     })
   );
+  
+  it("don't prefix externals", () =>
+    withDir(`
+      - entry.js: |
+          import foo from "foo-bar";
+          console.log(foo);
+          export default "OK";
+    `, async resolve => {
+      const options = {
+        ignoreWarning: [UNRESOLVED_IMPORT],
+        prefix: "_my_"
+      };
+      const result = await bundle(["entry.js"].map(i => resolve(i)), resolve("dist"), options);
+      looksLike(result.output["entry.js"].code, String.raw`
+        var _my_entry = (function () {
+          
+        console.log(fooBar);
+        var entry = "OK";
+        
+        return entry;
+        })();
+      `);
+    })
+  );
 
   it("work with empty chunks", () =>
     withDir(`
