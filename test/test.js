@@ -333,6 +333,42 @@ describe("rollup-plugin-iife", () => {
     })
   );
 
+  it("don't prefix multiple entries with custom name", () =>
+    withDir(`
+      - entry.js: |
+          import {foo} from "./foo.js";
+          console.log(foo);
+      - foo.js: |
+          export const foo = "123";
+    `, async resolve => {
+      const options = {
+        ignoreWarning: [UNRESOLVED_IMPORT],
+        names: {
+          "./foo.js": "myFoo"
+        },
+        prefix: "_my_"
+      };
+      const result = await bundle(["entry.js", "foo.js"].map(i => resolve(i)), resolve("dist"), options);
+      assert.equal(result.output["entry.js"].code.trim(), endent`
+        (function () {
+
+
+        console.log(myFoo.foo);
+        })();
+      `);
+      assert.equal(result.output["foo.js"].code.trim(), endent`
+        var myFoo = (function () {
+        const foo = "123";
+
+
+        return {
+          foo: foo
+        };
+        })();
+      `);
+    })
+  );
+
   it("prefix multiple entries, shared module", () =>
     withDir(`
       - entry.js: |
