@@ -4,6 +4,7 @@ const assert = require("assert");
 const rollup = require("rollup");
 const {withDir} = require("tempdir-yaml");
 const endent = require("endent");
+const {looksLike} = require("string-looks-like");
 
 const createPlugin = require("..");
 
@@ -293,6 +294,137 @@ describe("rollup-plugin-iife", () => {
         var entry = () => new EventLite;
 
 
+        return entry;
+        })();
+      `);
+    })
+  );
+
+  it("prefix multiple entries", () =>
+    withDir(`
+      - entry.js: |
+          import {foo} from "./foo.js";
+          console.log(foo);
+      - foo.js: |
+          export const foo = "123";
+    `, async resolve => {
+      const options = {
+        ignoreWarning: [UNRESOLVED_IMPORT],
+        prefix: "_my_"
+      };
+      const result = await bundle(["entry.js", "foo.js"].map(i => resolve(i)), resolve("dist"), options);
+      assert.equal(result.output["entry.js"].code.trim(), endent`
+        (function () {
+
+
+        console.log(_my_foo.foo);
+        })();
+      `);
+      assert.equal(result.output["foo.js"].code.trim(), endent`
+        var _my_foo = (function () {
+        const foo = "123";
+
+
+        return {
+          foo: foo
+        };
+        })();
+      `);
+    })
+  );
+
+  it("don't prefix multiple entries with custom name", () =>
+    withDir(`
+      - entry.js: |
+          import {foo} from "./foo.js";
+          console.log(foo);
+      - foo.js: |
+          export const foo = "123";
+    `, async resolve => {
+      const options = {
+        ignoreWarning: [UNRESOLVED_IMPORT],
+        names: {
+          "./foo.js": "myFoo"
+        },
+        prefix: "_my_"
+      };
+      const result = await bundle(["entry.js", "foo.js"].map(i => resolve(i)), resolve("dist"), options);
+      assert.equal(result.output["entry.js"].code.trim(), endent`
+        (function () {
+
+
+        console.log(myFoo.foo);
+        })();
+      `);
+      assert.equal(result.output["foo.js"].code.trim(), endent`
+        var myFoo = (function () {
+        const foo = "123";
+
+
+        return {
+          foo: foo
+        };
+        })();
+      `);
+    })
+  );
+
+  it("prefix multiple entries, shared module", () =>
+    withDir(`
+      - entry.js: |
+          import {foo} from "./foo.js";
+          import {bar} from "./bar.js";
+          console.log(foo, bar);
+      - foo.js: |
+          import {bar} from "./bar.js";
+          export const foo = "123" + bar;
+      - bar.js: |
+          export const bar = "456";
+    `, async resolve => {
+      const options = {
+        ignoreWarning: [UNRESOLVED_IMPORT],
+        prefix: "_my_"
+      };
+      const result = await bundle(["entry.js", "foo.js"].map(i => resolve(i)), resolve("dist"), options);
+      const [hash, hash2] = looksLike(result.output["entry.js"].code, String.raw`
+        (function () {
+          
+          
+        console.log(_my_foo{{[\w.]+}}, _my_foo{{[\w.]+}});
+        })();
+      `);
+      const [hash3] = looksLike(result.output["foo.js"].code, String.raw`
+        var _my_foo = (function () {
+
+        return {
+          foo: _my_foo{{[\w.]+}}
+        };
+        })();
+      `);
+      
+      assert.equal(hash.split(".")[0], hash2.split(".")[0]);
+      assert.equal(hash.split(".")[0], hash3.split(".")[0]);
+    })
+  );
+  
+  it("don't prefix externals", () =>
+    withDir(`
+      - entry.js: |
+          import foo from "foo-bar";
+          console.log(foo);
+          export default "OK";
+    `, async resolve => {
+      const options = {
+        ignoreWarning: [UNRESOLVED_IMPORT],
+        prefix: "_my_"
+      };
+      const result = await bundle(["entry.js"].map(i => resolve(i)), resolve("dist"), options);
+      looksLike(result.output["entry.js"].code, String.raw`
+        var _my_entry = (function () {
+          
+        console.log(fooBar);
+        var entry = "OK";
+        
         return entry;
         })();
       `);
