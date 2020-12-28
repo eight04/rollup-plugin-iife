@@ -82,6 +82,11 @@ Related projects
 Changelog
 ---------
 
+* 0.4.0 (Dec 28, 2020)
+
+  - Fix: plugin name.
+  - **Bump dependencies. Update to rollup@2.35.1, replace camelcase with lodash/camelCase.**
+
 * 0.3.1 (Feb 8, 2020)
 
   - Fix: prefix local imports.
