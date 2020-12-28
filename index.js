@@ -1,5 +1,5 @@
 const path = require("path");
-const camelcase = require("camelcase");
+const camelcase = require("lodash/camelCase");
 const {transform: iifeTransform} = require("es-iife");
 
 function idToName(id, nameMaps, prefix = "") {
