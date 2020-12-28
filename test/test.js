@@ -3,7 +3,7 @@ const assert = require("assert");
 
 const rollup = require("rollup");
 const {withDir} = require("tempdir-yaml");
-const endent = require("endent");
+const {default: endent} = require("endent");
 const {looksLike} = require("string-looks-like");
 
 const createPlugin = require("..");
@@ -33,7 +33,6 @@ async function bundle(input, output, {ignoreWarning = [], ...options} = {}) {
   const modules = bundle.cache.modules.slice();
   const result = await bundle.generate({
     format: "es",
-    legacy: true,
     freeze: false,
     sourcemap: true,
     ...output
