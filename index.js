@@ -29,7 +29,7 @@ function createPlugin({
   let isNamesResolved = false;
 
   return {
-    name: "rollup-plugin-inline-js",
+    name: "rollup-plugin-iife",
     renderChunk(code, {fileName}, {dir: outputDir, globals}) {
       if (!code) {
         return null;
