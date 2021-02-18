@@ -85,6 +85,11 @@ Related projects
 Changelog
 ---------
 
+* 0.5.0 (Feb 18, 2021)
+
+  - Now `'use strict';` directive is inserted by default.
+  - Add: `strict` option.
+
 * 0.4.0 (Dec 28, 2020)
 
   - Fix: plugin name.
