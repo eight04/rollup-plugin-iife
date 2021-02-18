@@ -144,7 +144,8 @@ describe("rollup-plugin-iife", () => {
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var myVar = (function () {
         'use strict';
-
+        
+        
         var entry = () => new EventLite;
 
 
@@ -173,6 +174,7 @@ describe("rollup-plugin-iife", () => {
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var entry = (function () {
         'use strict';
+
 
         var entry = new Vue;
 
@@ -207,6 +209,7 @@ describe("rollup-plugin-iife", () => {
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var entry = (function () {
         'use strict';
+
 
         var entry = new NotVue;
 
@@ -264,6 +267,7 @@ describe("rollup-plugin-iife", () => {
         var myVar = (function () {
         'use strict';
 
+
         var entry = () => new EventLite;
 
 
@@ -295,6 +299,7 @@ describe("rollup-plugin-iife", () => {
         var myVar = (function () {
         'use strict';
 
+
         var entry = () => new EventLite;
 
 
@@ -321,11 +326,13 @@ describe("rollup-plugin-iife", () => {
         (function () {
         'use strict';
 
+
         console.log(_my_foo.foo);
         })();
       `);
       assert.equal(result.output["foo.js"].code.trim(), endent`
         var _my_foo = (function () {
+        'use strict';
         const foo = "123";
 
 
@@ -356,6 +363,7 @@ describe("rollup-plugin-iife", () => {
       assert.equal(result.output["entry.js"].code.trim(), endent`
         (function () {
         'use strict';
+        
 
         console.log(myFoo.foo);
         })();
@@ -450,6 +458,7 @@ describe("rollup-plugin-iife", () => {
         (function () {
         'use strict';
 
+
         console.log(foo.foo);
         })();
       `);
@@ -483,7 +492,6 @@ describe("rollup-plugin-iife", () => {
       );
       assert.equal(result.output["entry.js"].code.trim(), endent`
         (function () {
-
         console.log(foo);
         })();
       `);
