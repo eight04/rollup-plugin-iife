@@ -24,7 +24,8 @@ function idToName(id, nameMaps, prefix = "") {
 function createPlugin({
   sourcemap = true,
   names,
-  prefix
+  prefix,
+  strict = true
 } = {}) {
   let isNamesResolved = false;
 
@@ -48,7 +49,8 @@ function createPlugin({
         parse: this.parse,
         name: idToName(path.resolve(outputDir, fileName), [names, globals], prefix),
         sourcemap,
-        resolveGlobal: id => idToName(resolveId(id, outputDir), [names, globals], prefix)
+        resolveGlobal: id => idToName(resolveId(id, outputDir), [names, globals], prefix),
+        strict
       });
     }
   };

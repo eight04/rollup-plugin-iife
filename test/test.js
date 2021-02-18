@@ -54,6 +54,7 @@ describe("rollup-plugin-iife", () => {
       const result = await bundle([resolve("entry.js")], resolve("dist"), {ignoreWarning: [UNRESOLVED_IMPORT]});
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var entry = (function () {
+        'use strict';
 
 
         var entry = () => new eventLite;
@@ -76,6 +77,7 @@ describe("rollup-plugin-iife", () => {
       const result = await bundle(["entry.js", "foo.js"].map(i => resolve(i)), resolve("dist"), {ignoreWarning: [UNRESOLVED_IMPORT]});
       assert.equal(result.output["entry.js"].code.trim(), endent`
         (function () {
+        'use strict';
 
 
         console.log(foo.foo);
@@ -83,6 +85,7 @@ describe("rollup-plugin-iife", () => {
       `);
       assert.equal(result.output["foo.js"].code.trim(), endent`
         var foo = (function () {
+        'use strict';
         const foo = "123";
 
 
@@ -109,6 +112,7 @@ describe("rollup-plugin-iife", () => {
       });
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var myVar = (function () {
+        'use strict';
 
 
         var entry = () => new EventLite;
@@ -139,8 +143,9 @@ describe("rollup-plugin-iife", () => {
       });
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var myVar = (function () {
-
-
+        'use strict';
+        
+        
         var entry = () => new EventLite;
 
 
@@ -168,6 +173,7 @@ describe("rollup-plugin-iife", () => {
       );
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var entry = (function () {
+        'use strict';
 
 
         var entry = new Vue;
@@ -202,6 +208,7 @@ describe("rollup-plugin-iife", () => {
       );
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var entry = (function () {
+        'use strict';
 
 
         var entry = new NotVue;
@@ -230,6 +237,7 @@ describe("rollup-plugin-iife", () => {
       );
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var _my_entry = (function () {
+        'use strict';
         const foo = "123";
 
 
@@ -257,6 +265,7 @@ describe("rollup-plugin-iife", () => {
       });
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var myVar = (function () {
+        'use strict';
 
 
         var entry = () => new EventLite;
@@ -288,6 +297,7 @@ describe("rollup-plugin-iife", () => {
       });
       assert.equal(result.output["entry.js"].code.trim(), endent`
         var myVar = (function () {
+        'use strict';
 
 
         var entry = () => new EventLite;
@@ -314,6 +324,7 @@ describe("rollup-plugin-iife", () => {
       const result = await bundle(["entry.js", "foo.js"].map(i => resolve(i)), resolve("dist"), options);
       assert.equal(result.output["entry.js"].code.trim(), endent`
         (function () {
+        'use strict';
 
 
         console.log(_my_foo.foo);
@@ -321,6 +332,7 @@ describe("rollup-plugin-iife", () => {
       `);
       assert.equal(result.output["foo.js"].code.trim(), endent`
         var _my_foo = (function () {
+        'use strict';
         const foo = "123";
 
 
@@ -350,13 +362,15 @@ describe("rollup-plugin-iife", () => {
       const result = await bundle(["entry.js", "foo.js"].map(i => resolve(i)), resolve("dist"), options);
       assert.equal(result.output["entry.js"].code.trim(), endent`
         (function () {
-
+        'use strict';
+        
 
         console.log(myFoo.foo);
         })();
       `);
       assert.equal(result.output["foo.js"].code.trim(), endent`
         var myFoo = (function () {
+        'use strict';
         const foo = "123";
 
 
@@ -387,14 +401,14 @@ describe("rollup-plugin-iife", () => {
       const result = await bundle(["entry.js", "foo.js"].map(i => resolve(i)), resolve("dist"), options);
       const [hash, hash2] = looksLike(result.output["entry.js"].code, String.raw`
         (function () {
-          
+        'use strict';
           
         console.log(_my_foo{{[\w.]+}}, _my_foo{{[\w.]+}});
         })();
       `);
       const [hash3] = looksLike(result.output["foo.js"].code, String.raw`
         var _my_foo = (function () {
-
+        'use strict';
         return {
           foo: _my_foo{{[\w.]+}}
         };
@@ -420,7 +434,7 @@ describe("rollup-plugin-iife", () => {
       const result = await bundle(["entry.js"].map(i => resolve(i)), resolve("dist"), options);
       looksLike(result.output["entry.js"].code, String.raw`
         var _my_entry = (function () {
-          
+        'use strict';
         console.log(fooBar);
         var entry = "OK";
         
@@ -442,6 +456,7 @@ describe("rollup-plugin-iife", () => {
       const result = await bundle(["entry.js", "foo.js", "bar.js"].map(i => resolve(i)), resolve("dist"), {ignoreWarning: [UNRESOLVED_IMPORT, EMPTY_BUNDLE]});
       assert.equal(result.output["entry.js"].code.trim(), endent`
         (function () {
+        'use strict';
 
 
         console.log(foo.foo);
@@ -449,6 +464,7 @@ describe("rollup-plugin-iife", () => {
       `);
       assert.equal(result.output["foo.js"].code.trim(), endent`
         var foo = (function () {
+        'use strict';
         const foo = "123";
 
 
@@ -458,6 +474,27 @@ describe("rollup-plugin-iife", () => {
         })();
       `);
       assert.equal(result.output["bar.js"].code.trim(), "");
+    })
+  );
+  
+  it("no strict", () =>
+    withDir(`
+      - entry.js: |
+          console.log(foo);
+    `, async resolve => {
+      const result = await bundle(
+        resolve("entry.js"),
+        resolve("dist"),
+        {
+          ignoreWarning: [UNRESOLVED_IMPORT, EMPTY_BUNDLE],
+          strict: false
+        }
+      );
+      assert.equal(result.output["entry.js"].code.trim(), endent`
+        (function () {
+        console.log(foo);
+        })();
+      `);
     })
   );
 });

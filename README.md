@@ -52,7 +52,8 @@ This module exports a single function.
 createPlugin({
   names?: Function|Object,
   sourcemap?: Boolean,
-  prefix?: String
+  prefix?: String,
+  strict?: Boolean
 }) => PluginInstance
 ```
 
@@ -71,6 +72,8 @@ If the plugin can't find a proper variable name, it would generate one according
 If `sourcemap` is false then don't generate the sourcemap. Default: `true`.
 
 When `prefix` is defined, it will be used to prefix auto-generated variable names. It doesn't prefix names defined in the `names` option. It doesn't prefix external imports.
+
+If `strict` is true then add `'use strict';` directive to the IIFE. Default: `true`.
 
 Related projects
 ----------------
