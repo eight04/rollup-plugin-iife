@@ -2,6 +2,8 @@ const path = require("path");
 const camelcase = require("lodash/camelCase");
 const {transform: iifeTransform} = require("es-iife");
 
+const IMPORT_META_URL = '(typeof document !== "undefined" && document.currentScript && document.currentScript.src || typeof location !== "undefined" && location.href || "")';
+
 function idToName(id, nameMaps, prefix = "") {
   for (const names of nameMaps) {
     let name;
@@ -25,7 +27,8 @@ function createPlugin({
   sourcemap = true,
   names,
   prefix,
-  strict = true
+  strict = true,
+  dynamicImport = null
 } = {}) {
   let isNamesResolved = false;
 
@@ -52,6 +55,21 @@ function createPlugin({
         resolveGlobal: id => idToName(resolveId(id, outputDir), [names, globals], prefix),
         strict
       });
+    },
+    resolveImportMeta(prop, {moduleId}) {
+      if (prop === "url") {
+        return IMPORT_META_URL;
+      }
+      this.error(`Unconverted import.meta.${prop} in ${moduleId}`);
+    },
+    renderDynamicImport() {
+      if (!dynamicImport) {
+        return null;
+      }
+      return {
+        left: `${dynamicImport}(`,
+        right: `, ${IMPORT_META_URL})`
+      };
     }
   };
 
