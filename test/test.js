@@ -497,4 +497,53 @@ describe("rollup-plugin-iife", () => {
       `);
     })
   );
+  
+  // https://github.com/eight04/rollup-plugin-iife/issues/20
+  xit("dynamic import", () =>
+    withDir(`
+      - entry.js: |
+          import("./foo.js").then(console.log);
+      - foo.js: |
+          import {bar} from "./bar.js";
+          export const foo = "foo" + bar;
+      - bar.js: |
+          export const bar = "bar";
+    `, async resolve => {
+      const result = await bundle(
+        [resolve("entry.js"), resolve("bar.js")],
+        resolve("dist"),
+        {
+          ignoreWarning: [UNRESOLVED_IMPORT, EMPTY_BUNDLE],
+          scriptLoader: "loadScript"
+        }
+      );
+      assert.equal(result.output["entry.js"].code.trim(), endent`
+        (function () {
+        'use strict';
+        loadScript(['./bar.js', './foo.js'], (typeof document !== "undefined" && document.currentScript && document.currentScript.src || typeof location !== "undefined" && location.href || "")).then(() => foo).then(console.log);
+        })();
+      `);
+    })
+  );
+
+  it("import.meta.url", () =>
+    withDir(`
+      - entry.js: |
+          window.url = new URL("./foo.svg", import.meta.url);
+    `, async resolve => {
+      const result = await bundle(
+        resolve("entry.js"),
+        resolve("dist"),
+        {
+          ignoreWarning: [UNRESOLVED_IMPORT, EMPTY_BUNDLE]
+        }
+      );
+      assert.equal(result.output["entry.js"].code.trim(), endent`
+        (function () {
+        'use strict';
+        window.url = new URL("./foo.svg", (typeof document !== "undefined" && document.currentScript && document.currentScript.src || typeof location !== "undefined" && location.href || ""));
+        })();
+      `);
+    })
+  );
 });
