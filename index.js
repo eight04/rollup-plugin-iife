@@ -28,7 +28,7 @@ function createPlugin({
   names,
   prefix,
   strict = true,
-  dynamicImport = null
+  scriptLoader = null
 } = {}) {
   let isNamesResolved = false;
 
@@ -63,11 +63,11 @@ function createPlugin({
       this.error(`Unconverted import.meta.${prop} in ${moduleId}`);
     },
     renderDynamicImport() {
-      if (!dynamicImport) {
+      if (!scriptLoader) {
         return null;
       }
       return {
-        left: `${dynamicImport}(`,
+        left: `${scriptLoader}(`,
         right: `, ${IMPORT_META_URL})`
       };
     }

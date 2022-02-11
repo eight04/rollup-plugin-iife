@@ -498,23 +498,29 @@ describe("rollup-plugin-iife", () => {
     })
   );
   
-  it("dynamicImport", () =>
+  // https://github.com/eight04/rollup-plugin-iife/issues/20
+  xit("dynamic import", () =>
     withDir(`
       - entry.js: |
-          import("foo").then(console.log);
+          import("./foo.js").then(console.log);
+      - foo.js: |
+          import {bar} from "./bar.js";
+          export const foo = "foo" + bar;
+      - bar.js: |
+          export const bar = "bar";
     `, async resolve => {
       const result = await bundle(
-        resolve("entry.js"),
+        [resolve("entry.js"), resolve("bar.js")],
         resolve("dist"),
         {
           ignoreWarning: [UNRESOLVED_IMPORT, EMPTY_BUNDLE],
-          dynamicImport: "myImport"
+          scriptLoader: "loadScript"
         }
       );
       assert.equal(result.output["entry.js"].code.trim(), endent`
         (function () {
         'use strict';
-        myImport('foo', (typeof document !== "undefined" && document.currentScript && document.currentScript.src || typeof location !== "undefined" && location.href || "")).then(console.log);
+        loadScript(['./bar.js', './foo.js'], (typeof document !== "undefined" && document.currentScript && document.currentScript.src || typeof location !== "undefined" && location.href || "")).then(() => foo).then(console.log);
         })();
       `);
     })
