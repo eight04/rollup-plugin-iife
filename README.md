@@ -85,6 +85,10 @@ Related projects
 Changelog
 ---------
 
+* 0.6.0 (Feb 11, 2022)
+
+  - Add: handle `import.meta.url`. The plugin also throws and error if it sees unconverted `import.meta`.
+
 * 0.5.0 (Feb 18, 2021)
 
   - Now `'use strict';` directive is inserted by default.
