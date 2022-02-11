@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-iife",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Convert ES modules into IIFEs.",
   "author": "eight04 <eight04@gmail.com>",
   "license": "MIT",
