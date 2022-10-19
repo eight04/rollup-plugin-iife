@@ -34,7 +34,7 @@ async function bundle(input, output, {ignoreWarning = [], ...options} = {}) {
   const result = await bundle.generate({
     format: "es",
     freeze: false,
-    sourcemap: true,
+    sourcemap: false,
     ...output
   });
   result.modules = modules;
