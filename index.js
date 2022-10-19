@@ -38,6 +38,9 @@ function createPlugin({
       if (!code) {
         return null;
       }
+      if (outputDir == null) {
+        throw new Error("failed locating output folder. Please set output.dir option");
+      }
       if (names && typeof names === "object" && !isNamesResolved) {
         const output = {};
         for (const [key, value] of Object.entries(names)) {
