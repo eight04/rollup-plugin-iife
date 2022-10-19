@@ -85,6 +85,11 @@ Related projects
 Changelog
 ---------
 
+* 0.7.0 (Oct 20, 2022)
+
+  - Breaking: bump to rollup@3.
+  - Change: throw an error if `output.dir` is not defined.
+
 * 0.6.0 (Feb 11, 2022)
 
   - Add: handle `import.meta.url`. The plugin also throws and error if it sees unconverted `import.meta`.
