@@ -46,10 +46,10 @@ API
 
 This module exports a single function.
 
-### createPlugin
+### iife
 
 ```js
-createPlugin({
+iife({
   names?: Function|Object,
   sourcemap?: Boolean,
   prefix?: String,
