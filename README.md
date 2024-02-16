@@ -85,6 +85,10 @@ Related projects
 Changelog
 ---------
 
+* 0.7.1 (Feb 16, 2024)
+
+  - Relax peer dependency. Support rollup 4.
+
 * 0.7.0 (Oct 20, 2022)
 
   - Breaking: bump to rollup@3.
