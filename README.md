@@ -1,11 +1,11 @@
 rollup-plugin-iife
 ==================
 
-[![Build Status](https://travis-ci.com/eight04/rollup-plugin-iife.svg?branch=master)](https://travis-ci.com/eight04/rollup-plugin-iife)
+[![test](https://github.com/eight04/rollup-plugin-iife/actions/workflows/test.yml/badge.svg)](https://github.com/eight04/rollup-plugin-iife/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/eight04/rollup-plugin-iife/branch/master/graph/badge.svg)](https://codecov.io/gh/eight04/rollup-plugin-iife)
 [![install size](https://packagephobia.now.sh/badge?p=rollup-plugin-iife)](https://packagephobia.now.sh/result?p=rollup-plugin-iife)
 
-Currently (rollup@0.65), [rollup doesn't support code splitting with IIFE output](https://github.com/rollup/rollup/issues/2072). This plugin would transform ES module output into IIFEs.
+Currently (rollup@0.65), [rollup doesn't support code splitting with IIFE output](https://github.com/rollup/rollup/issues/2072). This plugin would transform ES module output into IIFEs. Powered by [es-iife](https://www.npmjs.com/package/es-iife).
 
 Installation
 ------------
@@ -84,6 +84,10 @@ Related projects
 
 Changelog
 ---------
+
+* 0.8.0 (Apr 2, 2026)
+
+  - Bump dependencies. Fix export assignment issue.
 
 * 0.7.1 (Feb 16, 2024)
 
