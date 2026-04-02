@@ -10,22 +10,24 @@
     "iife"
   ],
   "scripts": {
-    "lint": "eslint \"**/*.js\" --cache",
+    "lint": "eslint . --cache",
     "test": "npm run lint && c8 --reporter=lcov mocha",
     "preversion": "npm test",
     "postversion": "git push --follow-tags && npm publish"
   },
   "main": "index.js",
   "dependencies": {
-    "es-iife": "^0.2.2",
-    "lodash": "^4.17.21"
+    "es-iife": "^0.3.0",
+    "lodash": "^4.18.1"
   },
   "devDependencies": {
-    "c8": "^9.1.0",
+    "@eslint/js": "^10.0.1",
+    "c8": "^11.0.0",
     "endent": "^2.1.0",
-    "eslint": "^8.56.0",
-    "mocha": "^10.3.0",
-    "rollup": "^4.11.0",
+    "eslint": "^10.1.0",
+    "globals": "^17.4.0",
+    "mocha": "^11.7.5",
+    "rollup": "^4.60.1",
     "string-looks-like": "^0.1.1",
     "tempdir-yaml": "^0.3.0"
   },
